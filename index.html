@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pengumuman Kelulusan SD Negeri 3 SUMBERKEPUH</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #c8dbec;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+      overflow: hidden; /* Mencegah scroll saat konfeti jatuh */
+    }
+    header {
+      background: linear-gradient(to right, #004fc4, #2289ff);
+      color: white;
+      padding: 20px 10px;
+      border-radius: 0 0 20px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    header img {
+      height: 80px;
+      margin-bottom: 10px;
+    }
+    header h1 {
+      margin: 5px 0;
+      font-size: 30px;
+    }
+    header h2 {
+      margin: 0;
+      font-size: 20px;
+    }
+    .container {
+      margin: 30px auto;
+      padding: 20px;
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      max-width: 400px;
+    }
+    input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 2px solid #ccc;
+      border-radius: 10px;
+      font-size: 16px;
+    }
+    button {
+      padding: 10px 20px;
+      background: #0066ff;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .result {
+      display: none;
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 10px;
+      background: #eaffea;
+      color: #333;
+    }
+    .result.success {
+      background: #e0ffe0;
+      border: 2px solid #28a745;
+    }
+    .result.fail {
+      background: #ffe0e0;
+      border: 2px solid #ff0000;
+    }
+    footer {
+      background-color: #004fc4;
+      color: white;
+      padding: 15px 0;
+      font-size: 14px;
+      text-align: center;
+      position: relative;
+      bottom: 0;
+      width: 100%;
+    }
+    .confetti {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 9999;
+    }
+    @keyframes fall {
+      to {
+        transform: translateY(100vh);
+      }
+    }
+    .confetti-particle {
+      position: absolute;
+      border-radius: 50%;
+      opacity: 0.8;
+      animation: fall linear forwards;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <img src="logo.png" alt="Logo SD Negeri III Sumberkepuh"> 
+    <h1>PENGUMUMAN KELULUSAN</h1>
+    <h2>SD Negeri 3 Sumberkepuh<br>Tahun Pelajaran 2024/2025</h2>
+  </header>
+  <div class="container">
+    <h3>Cek Status Kelulusan</h3>
+    <p>Masukkan Nomor Peserta Ujian untuk melihat hasil kelulusan</p>
+    <input type="text" id="nomorPeserta" placeholder="Contoh: KT-00-00000000-00">
+    <button onclick="cekKelulusan()">Periksa Status Kelulusan</button>
+    <div class="result" id="hasil">
+      <h3 id="nama"></h3>
+      <p id="nis"></p>
+      <p id="noPeserta"></p>
+      <p id="status" style="font-weight: bold; font-size: 18px;"></p>
+      <p id="pesan"></p>
+    </div>
+  </div>
+
+  <footer>
+    © 2025 SD Negeri 3 Sumberkepuh | Dinas Pendidikan Kabupaten Nganjuk
+  </footer>
+
+  <div class="confetti" id="confetti"></div>
+
+  <script>
+    const siswa = [
+      { Nama: 'AFIKA RAMADANIA PUTRI', NIS: 3068, NoPeserta: 'KT-25-20538240-01', Status: 'LULUS' },
+      { Nama: 'AHMAD DAFIANDIKA PRATAMA', NIS: 3069, NoPeserta: 'KT-25-20538240-02', Status: 'LULUS' },
+      { Nama: 'ALIM ALVARO ATMAJAYA', NIS: 3070, NoPeserta: 'KT-25-20538240-03', Status: 'LULUS' },
+      { Nama: 'ALVA PRAWIRA DINATA', NIS: 3071, NoPeserta: 'KT-25-20538240-04', Status: 'LULUS' },
+      { Nama: 'APRILIANO PUTRA KURNIAWAN', NIS: 3273, NoPeserta: 'KT-25-20538240-05', Status: 'LULUS' },
+      { Nama: 'AQIILA KHAIRANA RAHIMA', NIS: 3072, NoPeserta: 'KT-25-20538240-06', Status: 'LULUS' },
+      { Nama: 'AZKADINA ZOYA ALMAHYRA', NIS: 3073, NoPeserta: 'KT-25-20538240-07', Status: 'LULUS' },
+      { Nama: 'CANTICA RAHMA NUR FADHILA FIRDAUS', NIS: 3074, NoPeserta: 'KT-25-20538240-08', Status: 'LULUS' },
+      { Nama: 'CHESTA CALYA FARRAS', NIS: 3075, NoPeserta: 'KT-25-20538240-09', Status: 'LULUS' },
+      { Nama: 'DEWI SHAFIRA FAZA FIRDAUSI', NIS: 3076, NoPeserta: 'KT-25-20538240-10', Status: 'LULUS' },
+      { Nama: 'EDDOGANANG SETIAWAN', NIS: 3180, NoPeserta: 'KT-25-20538240-11', Status: 'LULUS' },
+      { Nama: 'FARIS IBAD JAUHARI', NIS: 3077, NoPeserta: 'KT-25-20538240-12', Status: 'LULUS' },
+      { Nama: 'HENIARTI TRI WINDASARI', NIS: 3079, NoPeserta: 'KT-25-20538240-13', Status: 'LULUS' },
+      { Nama: 'HESTI NOVARINA SARI', NIS: 3080, NoPeserta: 'KT-25-20538240-14', Status: 'LULUS' },
+      { Nama: 'JOEVANTIO ANUGRAH PANEMUAN', NIS: 3081, NoPeserta: 'KT-25-20538240-15', Status: 'LULUS' },
+      { Nama: 'KEISHA MAULIDA PUTRI ANDINA', NIS: 3082, NoPeserta: 'KT-25-20538240-16', Status: 'LULUS' },
+      { Nama: 'KENZYA JILAN FARHAH', NIS: 3083, NoPeserta: 'KT-25-20538240-17', Status: 'LULUS' },
+      { Nama: 'MARCVELLINO QOIDAH HIBATULLAH', NIS: 3084, NoPeserta: 'KT-25-20538240-18', Status: 'LULUS' },
+      { Nama: 'MARISKA QURROTU A\'YUN SALSABILA', NIS: 3085, NoPeserta: 'KT-25-20538240-19', Status: 'LULUS' },
+      { Nama: 'MEISYA ZAKIATUL LUTHFIANA', NIS: 3086, NoPeserta: 'KT-25-20538240-20', Status: 'LULUS' },
+      { Nama: 'MIFTAKUL JANAH', NIS: 3087, NoPeserta: 'KT-25-20538240-21', Status: 'LULUS' },
+      { Nama: 'MOCHAMAD REZA NOVANDY', NIS: 3088, NoPeserta: 'KT-25-20538240-22', Status: 'LULUS' },
+      { Nama: 'MOCHAMMAD AGIL YUDHA FIRMANSYAH', NIS: 3089, NoPeserta: 'KT-25-20538240-23', Status: 'LULUS' },
+      { Nama: 'MOHAMAD AJRIL ILHAM', NIS: 3090, NoPeserta: 'KT-25-20538240-24', Status: 'LULUS' },
+      { Nama: 'MUHAMAD ALBARI GUFON', NIS: 3091, NoPeserta: 'KT-25-20538240-25', Status: 'LULUS' },
+      { Nama: 'MUHAMAD SHARWAN AJI SYAHRIL', NIS: 3092, NoPeserta: 'KT-25-20538240-26', Status: 'LULUS' },
+      { Nama: 'MUHAMMAD MAULANA AZIDAN', NIS: 3177, NoPeserta: 'KT-25-20538240-27', Status: 'LULUS' },
+      { Nama: 'MUKHAMAD FERDI ARDIAN SYAH', NIS: 3093, NoPeserta: 'KT-25-20538240-28', Status: 'LULUS' },
+      { Nama: 'MUZHAFA ALVARO IRAWAN', NIS: 3094, NoPeserta: 'KT-25-20538240-29', Status: 'LULUS' },
+      { Nama: 'NABILA LARASATI', NIS: 3095, NoPeserta: 'KT-25-20538240-30', Status: 'LULUS' },
+      { Nama: 'NEYSA AMIRA AINUN MAHYA', NIS: 3096, NoPeserta: 'KT-25-20538240-31', Status: 'LULUS' },
+      { Nama: 'OLIVIA SYIFA FREDERIKA', NIS: 3179, NoPeserta: 'KT-25-20538240-32', Status: 'LULUS' },
+      { Nama: 'PANDU SURYA DHARMA', NIS: 3097, NoPeserta: 'KT-25-20538240-33', Status: 'LULUS' },
+      { Nama: 'PUTRI NUR APRILIA', NIS: 3098, NoPeserta: 'KT-25-20538240-34', Status: 'LULUS' },
+      { Nama: 'QORIN NUR LAILY', NIS: 3099, NoPeserta: 'KT-25-20538240-35', Status: 'LULUS' },
+      { Nama: 'ROSITA OKTAVIA MAHARANI', NIS: 3101, NoPeserta: 'KT-25-20538240-36', Status: 'LULUS' },
+      { Nama: 'SYARISA NUR HASANAH', NIS: 3102, NoPeserta: 'KT-25-20538240-37', Status: 'LULUS' },
+      { Nama: 'YUSNITA CITRA LESTARI', NIS: 3103, NoPeserta: 'KT-25-20538240-38', Status: 'LULUS' },
+      { Nama: 'ZASKYA ELSA SABRINA', NIS: 3104, NoPeserta: 'KT-25-20538240-39', Status: 'LULUS' },
+      { Nama: 'ZIDA ALVINA BARIKA', NIS: 3105, NoPeserta: 'KT-25-20538240-40', Status: 'LULUS' }
+    ];
+
+    function cekKelulusan() {
+      const input = document.getElementById('nomorPeserta').value.trim();
+      const hasil = document.getElementById('hasil');
+      const nama = document.getElementById('nama');
+      const nis = document.getElementById('nis');
+      const noPeserta = document.getElementById('noPeserta');
+      const status = document.getElementById('status');
+      const pesan = document.getElementById('pesan');
+      const confetti = document.getElementById('confetti');
+
+      const siswaDitemukan = siswa.find(s => s.NoPeserta === input);
+
+      if (siswaDitemukan) {
+        nama.textContent = siswaDitemukan.Nama;
+        nis.textContent = 'NIS: ' + siswaDitemukan.NIS;
+        noPeserta.textContent = 'No. Peserta: ' + siswaDitemukan.NoPeserta;
+        status.textContent = siswaDitemukan.Status;
+        if (siswaDitemukan.Status === 'LULUS') {
+          status.style.color = 'green';
+          hasil.classList.add('success');
+          hasil.classList.remove('fail');
+          pesan.textContent = 'Selamat! Anda telah menyelesaikan pendidikan di SD Negeri 3 Sumberkepuh.';
+          triggerConfetti();  // Menampilkan konfeti jika lulus
+        } else {
+          status.style.color = 'red';
+          hasil.classList.add('fail');
+          hasil.classList.remove('success');
+          pesan.textContent = 'Mohon maaf, Anda dinyatakan tidak lulus.';
+        }
+      } else {
+        nama.textContent = '';
+        nis.textContent = '';
+        noPeserta.textContent = '';
+        status.textContent = 'Data tidak ditemukan';
+        status.style.color = 'red';
+        hasil.classList.remove('success');
+        hasil.classList.add('fail');
+        pesan.textContent = 'Periksa kembali nomor peserta ujian Anda.';
+      }
+      hasil.style.display = 'block';
+    }
+
+    // Fungsi untuk men-trigger konfeti
+    function triggerConfetti() {
+      const confettiCount = 200;
+      for (let i = 0; i < confettiCount; i++) {
+        createConfettiParticle();
+      }
+    }
+
+    function createConfettiParticle() {
+      const confettiElement = document.createElement('div');
+      confettiElement.classList.add('confetti-particle');
+      const xPos = Math.random() * window.innerWidth;
+      const size = Math.random() * (15 - 5) + 5;
+      const color = ['#ff69b4', '#ff6347', '#7fff00', '#00bfff'][Math.floor(Math.random() * 4)];
+      confettiElement.style.width = `${size}px`;
+      confettiElement.style.height = `${size}px`;
+      confettiElement.style.backgroundColor = color;
+      confettiElement.style.left = `${xPos}px`;
+      confettiElement.style.animationDuration = `${Math.random() * 5 + 3}s`;
+      confettiElement.style.animationName = 'fall';
+      confettiElement.style.position = 'absolute';
+      confettiElement.style.top = '0px';
+      confettiElement.style.opacity = '0.8';
+
+      document.getElementById('confetti').appendChild(confettiElement);
+
+      // Menghapus partikel setelah animasi selesai
+      setTimeout(() => {
+        confettiElement.remove();
+      }, 8000); // Waktu yang sama dengan durasi animasi
+    }
+  </script>
+</body>
+</html>
